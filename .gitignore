@@ -1,8 +1,5 @@
 *target/
 *.iml
+*.swp
 .idea/
-*.class
-.project
-.settings/
-.classpath
 .mvn/

@@ -1,9 +1,0 @@
-spring:
-  application:
-    name: track
-
-  rabbitmq:
-    host: rabbitmq
-    port: 5672
-    username: guest
-    password: guest
