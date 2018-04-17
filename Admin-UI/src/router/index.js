@@ -240,7 +240,7 @@ export const asyncRouterMap = [
   */
   {
     path: '',
-    component: _import('example/table/index'),
+    component: _import('samples/index'),
     name: 'Samples',
     icon: 'component',
     children: [
@@ -258,18 +258,18 @@ export const asyncRouterMap = [
         name: '组件',
         icon: 'component',
         children: [
-          {path: '/components/index', component: _import('components/index'), name: '介绍 '},
-          {path: '/components/tinymce', component: _import('components/tinymce'), name: '富文本编辑器'},
-          {path: '/components/markdown', component: _import('components/markdown'), name: 'Markdown'},
-          {path: '/components/jsoneditor', component: _import('components/jsonEditor'), name: 'JSON编辑器'},
-          {path: '/components/dndlist', component: _import('components/dndList'), name: '列表拖拽'},
-          {path: '/components/splitpane', component: _import('components/splitpane'), name: 'SplitPane'},
-          {path: '/components/avatarupload', component: _import('components/avatarUpload'), name: '头像上传'},
-          {path: '/components/dropzone', component: _import('components/dropzone'), name: 'Dropzone'},
-          {path: '/components/sticky', component: _import('components/sticky'), name: 'Sticky'},
-          {path: '/components/countto', component: _import('components/countTo'), name: 'CountTo'},
-          {path: '/components/mixin', component: _import('components/mixin'), name: '小组件'},
-          {path: '/components/backtotop', component: _import('components/backToTop'), name: '返回顶部'}
+          {path: '/components/index', component: _import('samples/components/index'), name: '介绍 '},
+          {path: '/components/tinymce', component: _import('samples/components/tinymce'), name: '富文本编辑器'},
+          {path: '/components/markdown', component: _import('samples/components/markdown'), name: 'Markdown'},
+          {path: '/components/jsoneditor', component: _import('samples/components/jsonEditor'), name: 'JSON编辑器'},
+          {path: '/components/dndlist', component: _import('samples/components/dndList'), name: '列表拖拽'},
+          {path: '/components/splitpane', component: _import('samples/components/splitpane'), name: 'SplitPane'},
+          {path: '/components/avatarupload', component: _import('samples/components/avatarUpload'), name: '头像上传'},
+          {path: '/components/dropzone', component: _import('samples/components/dropzone'), name: 'Dropzone'},
+          {path: '/components/sticky', component: _import('samples/components/sticky'), name: 'Sticky'},
+          {path: '/components/countto', component: _import('samples/components/countTo'), name: 'CountTo'},
+          {path: '/components/mixin', component: _import('samples/components/mixin'), name: '小组件'},
+          {path: '/components/backtotop', component: _import('samples/components/backToTop'), name: '返回顶部'}
         ]
       },
       {
@@ -295,34 +295,34 @@ export const asyncRouterMap = [
         children: [
           {
             path: '',
-            component: _import('example/table/index'),
+            component: _import('samples/index'),
             redirect: '/example/table/table',
             name: 'Table',
             icon: 'table',
             children: [
               {
                 path: '/example/table/dynamictable',
-                component: _import('example/table/dynamictable/index'),
+                component: _import('samples/example/table/dynamictable/index'),
                 name: '动态table'
               },
-              {path: '/example/table/dragtable', component: _import('example/table/dragTable'), name: '拖拽table'},
+              {path: '/example/table/dragtable', component: _import('samples/example/table/dragTable'), name: '拖拽table'},
               {
                 path: '/example/table/inline_edit_table',
-                component: _import('example/table/inlineEditTable'),
+                component: _import('samples/example/table/inlineEditTable'),
                 name: 'table内编辑'
               },
-              {path: '/example/table/table', component: _import('example/table/table'), name: '综合table'}
+              {path: '/example/table/table', component: _import('samples/example/table/table'), name: '综合table'}
             ]
           },
           {
             path: '/example/form/edit',
             icon: 'form',
-            component: _import('example/form'),
+            component: _import('samples/example/form'),
             name: '编辑Form',
             meta: {isEdit: true}
           },
-          {path: '/example/form/create', icon: 'form', component: _import('example/form'), name: '创建Form'},
-          {path: '/tab/index', icon: 'tab', component: _import('example/tab/index'), name: 'Tab'}
+          {path: '/example/form/create', icon: 'form', component: _import('samples/example/form'), name: '创建Form'},
+          {path: '/tab/index', icon: 'tab', component: _import('samples/example/tab/index'), name: 'Tab'}
         ]
       },
       {
@@ -332,7 +332,7 @@ export const asyncRouterMap = [
         name: 'errlog',
         icon: 'bug',
         noDropdown: true,
-        children: [{path: '/errlog/log', component: _import('errlog/index'), name: '错误日志'}]
+        children: [{path: '/errlog/log', component: _import('samples/errlog/index'), name: '错误日志'}]
       },
       {
         path: '',
@@ -341,9 +341,9 @@ export const asyncRouterMap = [
         name: 'excel',
         icon: 'excel',
         children: [
-          {path: '/excel/download', component: _import('excel/index'), name: 'export excel'},
-          {path: '/excel/download2', component: _import('excel/selectExcel'), name: 'export selected'},
-          {path: '/excel/upload', component: _import('excel/uploadExcel'), name: 'upload excel'}
+          {path: '/excel/download', component: _import('samples/excel/index'), name: 'export excel'},
+          {path: '/excel/download2', component: _import('samples/excel/selectExcel'), name: 'export selected'},
+          {path: '/excel/upload', component: _import('samples/excel/uploadExcel'), name: 'upload excel'}
         ]
       },
       {
@@ -353,7 +353,7 @@ export const asyncRouterMap = [
         name: 'zip',
         icon: 'zip',
         children: [
-          {path: '/zip/download', component: _import('zip/index'), name: 'export zip'}
+          {path: '/zip/download', component: _import('samples/zip/index'), name: 'export zip'}
         ]
       },
       {
@@ -363,7 +363,7 @@ export const asyncRouterMap = [
         name: 'theme',
         icon: 'theme',
         noDropdown: true,
-        children: [{path: '/theme/index', component: _import('theme/index'), name: '换肤'}]
+        children: [{path: '/theme/index', component: _import('samples/theme/index'), name: '换肤'}]
       },
       {
         path: '',
@@ -371,7 +371,7 @@ export const asyncRouterMap = [
         redirect: 'noredirect',
         icon: 'clipboard',
         noDropdown: true,
-        children: [{path: '/clipboard/index', component: _import('clipboard/index'), name: 'clipboard'}]
+        children: [{path: '/clipboard/index', component: _import('samples/clipboard/index'), name: 'clipboard'}]
       }
     ]
   },
