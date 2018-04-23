@@ -1,0 +1,37 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: eap-admin
+  security:
+    user:
+      ### The default UserDetailsService has a single user.
+      ### The user name is user, and the password is random
+      ### and is printed at INFO level when the application starts.
+      password: 123456
+      roles:
+        - USER
+        - ADMIN
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+    default-property-inclusion: non_null
+
+#logging:
+#  level:
+    ### If you fine-tune your logging configuration, ensure that
+    ### the org.springframework.boot.autoconfigure.security
+    ### category is set to log INFO-level messages.
+    ### Otherwise, the default password is not printed.
+#    org.springframework.boot.autoconfigure.security: info
+
+environment:
+  jwt:
+    header: access-token
+  swagger:
+    base-package: com.amani.eap
+    service:
+      title: Enterprise Application Platform
+      description: An Enterprise Application Development Platform.
+      developers: billJiang, 鬼王

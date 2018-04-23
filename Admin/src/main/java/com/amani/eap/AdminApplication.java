@@ -1,10 +1,10 @@
-package com.eap;
+package com.amani.eap;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @Author Guiwang
+ * @Author 鬼王
  * @Date 2018/04/16 16:23
  */
 @SpringBootApplication

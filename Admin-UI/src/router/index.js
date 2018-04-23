@@ -59,7 +59,6 @@ export default new Router({
 })
 
 export const asyncRouterMap = [
-  /*
   {
     path: '',
     component: Layout,
@@ -70,7 +69,7 @@ export const asyncRouterMap = [
       {
         path: '/admin/user',
         // 如果不配置，则从后台读取
-        // component: _import('admin/user/index'),
+        component: _import('admin/user/index'),
         name: '用户管理',
         icon: 'user'
       },
@@ -81,7 +80,7 @@ export const asyncRouterMap = [
         name: '用户管理新增修改',
         icon: 'user',
         hidden: true
-      }, {
+      } /*, {
         path: '/admin/org',
         component: _import('admin/org/index'),
         name: '组织机构管理',
@@ -122,6 +121,7 @@ export const asyncRouterMap = [
         name: '工作日管理',
         icon: 'user'
       }
+      */
       // , {
       //   path: '/introduction/introduction',
       //   // 如果不配置，则从后台读取
@@ -131,7 +131,6 @@ export const asyncRouterMap = [
       // }
     ]
   },
-  */
   /*
   {
     path: '',
@@ -222,6 +221,7 @@ export const asyncRouterMap = [
       // }
     ]
   },
+  */
   {
     path: '',
     component: Layout,
@@ -237,12 +237,11 @@ export const asyncRouterMap = [
       meta: {role: ['admin']}
     }]
   },
-  */
   {
     path: '',
     component: _import('samples/index'),
     name: 'Samples',
-    icon: 'component',
+    icon: 'example',
     children: [
       {
         path: '',
