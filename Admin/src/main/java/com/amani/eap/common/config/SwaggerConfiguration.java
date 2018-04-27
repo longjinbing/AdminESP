@@ -22,16 +22,16 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfiguration implements WebMvcConfigurer {
 
-    @Value("${environment.swagger.base-package}")
+    @Value("${environments.package.base}")
     private String basePackage;
 
-    @Value("${environment.swagger.service.developers}")
+    @Value("${environments.swagger.service.developers}")
     private String developers;
 
-    @Value("${environment.swagger.service.title}")
+    @Value("${environments.swagger.service.title}")
     private String title;
 
-    @Value("${environment.swagger.service.description}")
+    @Value("${environments.swagger.service.description}")
     private String description;
 
     @Override

@@ -6,8 +6,8 @@
     <!--
     Running MyBatis Generator With Java: com.amani.eap.common.mybatis.generator.EntityGenerator
     如果需要用：mybatis-generator:generate，需要注意：
-    1.useMapperCommentGenerator值改为true或直接注释
-    2.commentGenerator 注释掉
+    1.<useMapperCommentGenerator>值改为true或直接注释
+    2.<commentGenerator> 注释掉
     3.pom.xml中mybatis-generator-maven-plugin注释取消
     -->
     <context id="mysql" targetRuntime="MyBatis3Simple" defaultModelType="flat">
@@ -22,7 +22,7 @@
         <commentGenerator type="com.amani.eap.common.mybatis.generator.EntityCommentGenerator"/>
 
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/eap-admin?useUnicode=true&amp;characterEncoding=UTF8&amp;useInformationSchema=true"
+                        connectionURL="jdbc:mysql://localhost:3306/eap-admin?useUnicode=true&amp;characterEncoding=UTF8&amp;useInformationSchema=true&amp;useSSL=false"
                         userId="root"
                         password="mysql" />
 
@@ -37,15 +37,16 @@
         <!--<javaClientGenerator type="XMLMAPPER" targetPackage="${targetMapperPackage}"-->
         <!--targetProject="${targetJavaProject}"/>-->
 
-        <table tableName="base_user" domainObjectName="UserModel">
+        <table tableName="base_user" domainObjectName="User">
             <property name="author" value="鬼王"/>
+            <!-- rootClass可以配置在<javaModelGenerator>中作为全局超类， -->
             <property name="rootClass" value="com.amani.eap.common.entity.BaseEntity"/>
             <generatedKey column="id" identity="true" sqlStatement="MySql"/>
         </table>
 
-        <table tableName="base_dict" domainObjectName="Dict">
-            <property name="author" value="鬼王"/>
-            <generatedKey column="id" identity="true" sqlStatement="MySql"/>
-        </table>
+        <!--<table tableName="base_dict" domainObjectName="Dict">-->
+            <!--<property name="author" value="鬼王"/>-->
+            <!--<generatedKey column="id" identity="true" sqlStatement="MySql"/>-->
+        <!--</table>-->
     </context>
 </generatorConfiguration>

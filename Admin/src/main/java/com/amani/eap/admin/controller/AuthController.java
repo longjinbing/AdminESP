@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("jwt")
 public class AuthController {
 
-    @Value("${environment.jwt.header}")
+    @Value("${environments.jwt.header}")
     private String tokenHeader;
 
     @PostMapping("token")
