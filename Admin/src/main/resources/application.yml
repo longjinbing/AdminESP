@@ -43,7 +43,7 @@ mybatis:
 #  type-aliases-package: ${environments.package.admin}.entity
   mapper-package: ${environments.package.admin}.mapper
   ### tk.mybatis.mapper.mapperhelper.MapperTemplate.getIDENTITY(tk.mybatis.mapper.entity.EntityColumn)
-  ### 使用MessageFormat.format(),使用單引號轉義
+  ### 使用了MessageFormat.format(),需要用單引號轉義
   identity: SELECT REPLACE(UUID(), ''-'', '''')
   order: BEFORE
   wrap-keyword: '`{0}`'

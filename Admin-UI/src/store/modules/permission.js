@@ -39,7 +39,7 @@ function filterAsyncRouter(asyncRouterMap, menus) {
       return true
     }
     return false
-  })
+  });
   return accessedRouters
 }
 
@@ -55,7 +55,7 @@ function filterAdminRouter(asyncRouterMap, menus) {
       route.children = filterAdminRouter(route.children, menus)
     }
     return true;
-  })
+  });
   return adminRouter;
 }
 
@@ -71,7 +71,7 @@ function filterEmptyRouter(accessedRouters) {
         return false;
       }
     }
-  })
+  });
   return filterRouter;
 }
 
@@ -87,6 +87,12 @@ const permission = {
     }
   },
   actions: {
+    GenerateRoutesMock({commit}) {
+      return new Promise(resolve => {
+        commit('SET_ROUTERS', filterEmptyRouter(asyncRouterMap));
+        resolve();
+      });
+    },
     GenerateRoutes({commit}, data) {
       const roles = data.roles;
       const menus = data.menus;
@@ -100,9 +106,9 @@ const permission = {
         }
         commit('SET_ROUTERS', accessedRouters);
         resolve();
-      })
+      });
     }
   }
-}
+};
 
 export default permission

@@ -6,7 +6,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author 鬼王
@@ -23,7 +26,7 @@ public class ResponseMessage<T> {
     public ResponseMessage() {
         if (null == generateToken()){
             this.setToken("");
-        }else {
+        } else {
             this.setToken(generateToken());
             this.setStatus(ResponseConstant.WEB_RESPONSE_STATUES_REPLACE_TOKEN);
         }
@@ -98,6 +101,7 @@ public class ResponseMessage<T> {
     public String getToken() {
         return token;
     }
+
     public String generateToken() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Object replace_token = request.getAttribute(ResponseConstant.REPLACE_TOKEN_KEY);

@@ -18,4 +18,6 @@ Mock.mock(/\/article\/pv/, 'get', articleAPI.getPv)
 // 搜索相关
 Mock.mock(/\/search\/user/, 'get', remoteSearchAPI.searchUser)
 
+// Mock.mock(/\/api\/admin\/user\/list/, 'get', remoteSearchAPI.userList)
+
 export default Mock

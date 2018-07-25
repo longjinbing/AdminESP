@@ -34,6 +34,12 @@ public class BaseController<Service extends BaseService, Entity> {
 
     @PutMapping("put")
     public ResponseMessage<Entity> update(@RequestBody Entity entity) {
+        baseService.updateById(entity);
+        return new ResponseMessage<Entity>().success();
+    }
+
+    @PutMapping("put/selective")
+    public ResponseMessage<Entity> updateSelective(@RequestBody Entity entity) {
         baseService.updateSelectiveById(entity);
         return new ResponseMessage<Entity>().success();
     }

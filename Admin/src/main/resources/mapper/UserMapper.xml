@@ -8,6 +8,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="enabled" jdbcType="INTEGER" property="enabled" />
     <result column="create_uid" jdbcType="VARCHAR" property="createUid" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_host" jdbcType="VARCHAR" property="createHost" />

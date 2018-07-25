@@ -3,10 +3,12 @@ package com.amani.eap.common.util;
 import com.amani.eap.common.annotation.ValueInject;
 import com.amani.eap.common.annotation.ValueSource;
 import com.amani.eap.common.constant.BaseConstants;
+import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.util.Date;
@@ -25,12 +27,14 @@ public class EntityUtil {
 		return new HashMap<String, String>() {{
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 			if (request != null) {
-				put(BaseConstants.REQUEST_HEADER_HOST,
-						String.valueOf(request.getHeader(BaseConstants.REQUEST_HEADER_HOST)));
-				put(BaseConstants.REQUEST_HEADER_UNAME,
-						URLDecoder.decode(String.valueOf(request.getHeader(BaseConstants.REQUEST_HEADER_UNAME))));
-				put(BaseConstants.REQUEST_HEADER_UID,
-						String.valueOf(request.getHeader(BaseConstants.REQUEST_HEADER_UID)));
+				put(BaseConstants.REQUEST_HEADER_HOST, request.getHeader(BaseConstants.REQUEST_HEADER_HOST));
+				try {
+					String username = request.getHeader(BaseConstants.REQUEST_HEADER_UNAME);
+					put(BaseConstants.REQUEST_HEADER_UNAME, username == null ? username : URLDecoder.decode(username, null));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+				put(BaseConstants.REQUEST_HEADER_UID, request.getHeader(BaseConstants.REQUEST_HEADER_UID));
 			}
 		}};
 	}

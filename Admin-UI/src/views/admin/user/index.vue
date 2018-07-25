@@ -1,168 +1,122 @@
 <template>
-  <div class="app-container calendar-list-container">
+  <div class="app-container">
 
-    <!--查询条件-->
     <div class="filter-container">
-      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户"
-                v-model="listQuery.name" :clearable="true"/>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter" title="搜索">搜索</el-button>
-      <el-button class="filter-item" type="primary" icon="plus" v-if="userManager_btn_add" title="新增"
-                 style="margin-left:10px;" @click="handleCreate">新增</el-button>
+      <el-input placeholder="姓名/拼音/缩写/用户名" style="width: 200px;"/>
+
+      <el-button type="primary" icon="el-icon-search" :title="labels.search">{{labels.search}}</el-button>
+      <el-button type="primary" icon="el-icon-plus" :title="labels.add" @click="dialogVisible = true">{{labels.add}}</el-button>
     </div>
 
-    <!--列表-->
-    <el-table :key="tableKey" :data="list"  stripe v-loading.body="listLoading" fit highlight-current-row
-              style="width: 100%;">
-      <el-table-column align="center" label="序号" type="index" width="65">
-      </el-table-column>
-      <el-table-column align="center" label="姓名" sortable prop="name" style="width: 10%">
-        <template scope="scope">
-          <span>{{scope.row.name}}</span>
+    <el-table :data="list" :key="tableKey" border stripe fit highlight-current-row v-loading.body="listLoading"
+              max-height="650">
+      <el-table-column align="center" type="index" label="序号" fixed="left" width="65"/>
+      <el-table-column align="center" prop="name" label="姓名"/>
+      <el-table-column align="center" prop="username" label="账号"/>
+      <el-table-column align="center" prop="email" label="邮箱"/>
+      <el-table-column align="center" prop="mobile" label="手机"/>
+      <el-table-column align="center" label="状态" width="80">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.enabled"
+            :active-value="elSwitch.enable"
+            :inactive-value="elSwitch.disable"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="switchState($event, scope.row.id)"/>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="账户" style="width: 10%">
-        <template scope="scope">
-          <span>{{scope.row.username}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="性别" style="width: 10%">
-        <template scope="scope">
-          <span v-for="(item, index ) in sexList" :key="index" v-if="item.id === scope.row.sex"> {{ item.name }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="生日" style="width: 10%" prop="birthday">
-        <template scope="scope">
-          <span>{{scope.row.birthday | formatDate('yyyy-MM-dd')}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="邮箱"  style="width: 20%">
-        <template scope="scope">
-          <span>{{scope.row.email}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="手机" style="width: 10%">
-        <template scope="scope">
-          <span>{{scope.row.mobilePhone}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="最近更新时间"  style="width: 10%">
-        <template scope="scope">
-          <span>{{scope.row.updateTime}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="最后更新人" style="width: 10%">
-        <template scope="scope">
-          <span>{{scope.row.updateName}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column fixed="right" align="center" label="操作" style="width: 10%">
-        <template scope="scope">
-          <el-button v-if="userManager_btn_edit" size="small" type="success"
-                     @click="handleUpdate(scope.row)">编辑</el-button>
-          <el-button v-if="userManager_btn_del" size="small" type="danger"
-                     @click="handleDelete(scope.row)">删除</el-button>
+      <el-table-column align="center" fixed="right" label="操作" width="120">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="handleEdit(scope.row)"/>
+          <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="handleDelete(scope.row)"/>
         </template>
       </el-table-column>
     </el-table>
 
-    <!--分页-->
-    <div v-show="!listLoading" class="pagination-container">
-      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
-                     :current-page.sync="listQuery.page"
-                     :page-sizes="[10,20,30,50]" :page-size="listQuery.limit"
-                     layout="total,sizes,prev,pager,next,jumper" :total="total">
+    <div class="pagination-container">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="listQuery.page"
+        :page-sizes="[10, 20, 30, 50]"
+        :page-size="listQuery.limit"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total">
       </el-pagination>
     </div>
 
-    <!-- 组织机构管理选择树 -->
-    <!--<el-dialog :visible.sync="dialogOrgTreeVisible" ref="diaog_tree" size="tiny">-->
-    <!--<org-tree @org_tree="getTreeNodes" checkOrgId="" @org_tree_cancel="orgCancelTree"></org-tree>-->
-    <!--</el-dialog>-->
+    <el-dialog title="人员信息" :visible.sync="dialogVisible" width="23%" @close="closeDialog">
+      <el-form label-width="80px" :model="form" ref="form" :rules="rules">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="form.username"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email"></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="form.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="saveUser">保 存</el-button>
+      </span>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex';
-  import { page, delObj} from 'api/admin/user/index';
-  import OrgTree from '@/views/admin/org/checkOrg';
-  import { getDictByCode } from 'api/admin/dict/index';
+  import { page, addObj, putObj, delObj } from 'api/admin/user/index';
 
   export default {
-    name: 'user',
-    components: { OrgTree },
     data() {
       return {
-        form: this.initObj(),
-        birthdayOptions: {
-          disabledDate(time) {
-            return time.getTime() > Date.now() - 8.64e7;
-          }
-        },
-        list: null,
-        total: null,
+        labels: { search: '搜索', add: '新增' },
+        list: [],
+        total: 0,
+        tableKey: 0,
         listLoading: true,
-        dialogOrgTreeVisible: false,
         listQuery: {
           page: 1,
           limit: 20,
           name: undefined
         },
-        sexOptions: ['男', '女'],
-        dialogFormVisible: false,
-        dialogStatus: '',
-        userManager_btn_edit: false,
-        userManager_btn_add: false,
-        userManager_btn_del: false,
-        textMap: {
-          update: '更新',
-          create: '创建'
+        dialogVisible: false,
+        form: { id: null, name: null, username: null, email: null, mobile: null },
+        rules: {
+          name: [
+            { required: true, message: '请输入姓名', trigger: 'blur' }
+          ],
+          username: [
+            { required: true, message: '请输入账号', trigger: 'blur' }
+          ],
+          email: [
+            { required: true, message: '请输入邮箱', trigger: 'blur' }
+          ],
+          mobile: [
+            { required: true, message: '请输入手机号', trigger: 'blur' }
+          ]
         },
-        tableKey: 0,
-        treeNodes: '',
-        sexList: []
-      }
+        elSwitch: { enable: 1, disable: 0 }
+      };
     },
     created() {
       this.getList();
-      this.userManager_btn_edit = true;
-      this.userManager_btn_add = true;
-      this.userManager_btn_del = true;
-    },
-    computed: {
-      ...mapGetters(['elements'])
     },
     methods: {
-      initObj() {
-        return {
-          username: undefined,
-          name: undefined,
-          sex: '男',
-          password: undefined,
-          email: undefined,
-          birthday: '',
-          address: '',
-          mobilePhone: undefined,
-          description: undefined,
-          corg: '',
-          corgId: ''
-        }
-      },
-      handleClose(done) {
-        this.cancel('form');
-        done();
-      },
       getList() {
         this.listLoading = true;
-        page(this.listQuery).then(response => {
-          this.list = response.data.data.rows;
-          this.total = response.data.data.total;
+        page(this.listQuery).then(res => {
+          this.list = res.data.data.rows;
+          this.total = res.data.data.total;
           this.listLoading = false;
         });
-        getDictByCode('XB').then(data => { this.sexList = data.data; });
-      },
-      handleFilter() {
-        this.getList();
       },
       handleSizeChange(val) {
         this.listQuery.limit = val;
@@ -172,39 +126,43 @@
         this.listQuery.page = val;
         this.getList();
       },
-      handleCreate() {
-        this.$router.push({
-          path: '/admin/uLayout',
-          query: { id: '' }
-        })
-      },
-      handleUpdate(row) {
-        this.$router.push({
-          path: '/admin/uLayout',
-          query: { id: row.id }
-        })
+      handleEdit(row) {
+        const { id, name, username, email, mobile } = row;
+        this.form = { id, name, username, email, mobile };
+        this.dialogVisible = true;
       },
       handleDelete(row) {
-        this.$confirm('是否刪除该记录？', '记录', {
+        this.$confirm('此操作将彻底删除用户信息, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           delObj(row.id).then(() => {
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
+            this.getList();
+            this.$message({ type: 'success', message: '删除成功!' });
+          });
+        }).catch(() => {});
+      },
+      saveUser() {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            (this.form.id ? putObj : addObj)(this.form).then(() => {
+              this.$message({ type: 'success', message: '保存成功!' });
+              this.dialogVisible = false;
+              this.getList();
             });
-            const index = this.list.indexOf(row);
-            this.list.splice(index, 1);
-          })
-        })
+          }
+        });
+      },
+      closeDialog() {
+        this.form = { id: null, name: null, username: null, email: null, mobile: null };
+        this.$refs.form.clearValidate();
+      },
+      switchState(val, id) {
+        console.info(val)
+        console.info(id)
+        putObj({ id, enabled: val }).then();
       }
     }
   }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-  .input-selects-width { width: 340px; }
-</style>

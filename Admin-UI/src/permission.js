@@ -3,7 +3,7 @@ import store from './store';
 import NProgress from 'nprogress'; // Progress 进度条
 import 'nprogress/nprogress.css'; // Progress 进度条样式
 import { getToken } from '@/utils/auth'; // 验权
-import { Message } from 'element-ui';
+// import { Message } from 'element-ui';
 // permissiom judge
 /*
 function hasPermission(roles, permissionRoles) {
@@ -22,7 +22,9 @@ router.beforeEach((to, from, next) => {
       next({path: '/'});
     } else {
       console.log('角色的数量' + store.getters.roles.length);
-      if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+      // if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息
+      if (store.getters.addRouters.length === 0) { // 判断当前用户是否已拉取完user_info信息
+        /*
         store.dispatch('GetUserInfo').then(res => { // 拉取user_info
           if (res.status === 308010) {
             Message({ showClose: true, message: res.data, type: 'error' });
@@ -42,6 +44,12 @@ router.beforeEach((to, from, next) => {
           });
         }).catch(() => {
           store.dispatch('FedLogOut').then(() => next({path: '/login'}));
+        });
+        */
+        store.dispatch('GenerateRoutesMock').then(() => { // 生成可访问的路由表
+          console.debug(store.getters.addRouters)
+          router.addRoutes(store.getters.addRouters); // 动态添加可访问路由表
+          next({...to}); // hack方法 确保addRoutes已完成
         });
       } else {
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓

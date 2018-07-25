@@ -6,9 +6,9 @@ package com.amani.eap.admin.service;
  */
 public interface AuthService {
 
-    /*String login(String username, String secret);
+    String login(String username, String secret);
 
-    String refresh(String oldToken);
+    /*String refresh(String oldToken);
 
     Boolean validate(String token,String resource);
 

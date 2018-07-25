@@ -2,7 +2,7 @@ import fetch from 'utils/fetch';
 
 export function page(query) {
   return fetch({
-    url: '/api/admin/user/list',
+    url: '/api/admin/user/page',
     method: 'get',
     params: query
   })
@@ -18,21 +18,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return fetch({
-    url: '/api/admin/user/get/' + id,
+    url: `/api/admin/user/get/${id}`,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return fetch({
-    url: '/api/admin/user/delete/' + id,
+    url: `/api/admin/user/delete/${id}`,
     method: 'delete'
   })
 }
 
-export function putObj(id, obj) {
+export function putObj(obj) {
   return fetch({
-    url: '/api/admin/user/put/' + id,
+    url: '/api/admin/user/put/selective',
     method: 'put',
     data: obj
   })

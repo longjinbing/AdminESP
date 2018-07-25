@@ -30,13 +30,13 @@ module.exports = {
 			assetsPublicPath: '/',
 			proxyTable: {
         '/jwt': {
-          target: 'http://10.122.20.240:8765',
+          target: 'http://localhost:8081',
           pathRewrite: { '^/jwt': '/jwt' }
 				},
-        '/api':{
-          target: 'http://10.122.20.240:8765',
-          pathRewrite: { '^/api': '/api' }
-        },
+        '/api': {
+          target: 'http://localhost:8081',
+          pathRewrite: { '^/api/admin': '' }
+        }
       },
 			// CSS Sourcemaps off by default because relative paths are "buggy"
 			// with this option, according to the CSS-Loader README

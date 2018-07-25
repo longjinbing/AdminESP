@@ -20,5 +20,20 @@ export default {
       return true
     })
     return { items: mockNameList }
+  },
+  userList: config => {
+    const list = [];
+    for (let i = 0; i < 20; i++) {
+      const email = Mock.Random.email('petrochina.com');
+      list.push(Mock.mock({
+        name: '@cname',
+        username: email.substring(0, email.indexOf('@')),
+        email,
+        mobile: /^1[385][1-9]\d{8}/,
+        enabled: 1
+      }));
+    }
+
+    return { data: { data: { total: 3198, rows: list } } };
   }
 }

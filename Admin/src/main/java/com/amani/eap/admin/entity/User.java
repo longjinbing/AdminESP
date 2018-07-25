@@ -29,6 +29,14 @@ public class User extends BaseEntity {
 
     private String mobile;
 
+    private Integer enabled;
+
+    public User() {}
+
+    public User(String username) {
+        this.username = username;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -67,5 +75,13 @@ public class User extends BaseEntity {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public Integer getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Integer enabled) {
+        this.enabled = enabled;
     }
 }

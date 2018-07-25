@@ -72,7 +72,7 @@ export const asyncRouterMap = [
         component: _import('admin/user/index'),
         name: '用户管理',
         icon: 'user'
-      },
+      } /* ,
       {
         path: '/admin/uLayout',
         // 如果不配置，则从后台读取
@@ -80,7 +80,7 @@ export const asyncRouterMap = [
         name: '用户管理新增修改',
         icon: 'user',
         hidden: true
-      } /*, {
+      } , {
         path: '/admin/org',
         component: _import('admin/org/index'),
         name: '组织机构管理',

@@ -1,58 +1,61 @@
 package com.amani.eap.admin.service.impl;
 
+import com.amani.eap.admin.entity.User;
 import com.amani.eap.admin.service.AuthService;
+import com.amani.eap.admin.service.UserService;
+import com.amani.eap.common.constant.BaseConstants;
+import com.amani.eap.common.constant.ResponseConstant;
+import com.amani.eap.common.jwt.JwtTokenUtil;
+import com.amani.eap.common.util.AESUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @Author 鬼王
  * @Date 2018/04/18 13:45
  */
+@Service
 public class AuthServiceImpl implements AuthService {
 
-    /*private UserService userService;
-    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-
-    @Value("${webservice.login.url}")
-    private String webServiceUrl;
-
-    @Value("${webservice.login.openAD}")
-    private boolean openAD;
-
     @Autowired
-    public AuthServiceImpl(UserService userService) {
-        this.userService = userService;
-    }
+    private UserService userService;
 
     @Override
     public String login(String username, String password) {
-        UserInfo info = userService.getUserByUsername(username);
-        String token = "";
-        if(!openAD) { // 不采用openad
-            if (encoder.matches(password, info.getPassword())) {
-                token = generateToken(info);
-            }
-        }else { //采用openad
-            if (LoginUtil.loginAD(webServiceUrl, username, password)) {
-                token = generateToken(info);
+        String token = null;
+        if (!StringUtils.isAnyEmpty(username, password)) {
+            User user = userService.selectOne(new User(username));
+            if (user != null && new BCryptPasswordEncoder(BaseConstants.ENCODER_STRENGTH)
+                    .matches(password, user.getPassword())) {
+                token = this.generateToken(user);
             }
         }
+
         return token;
     }
 
-    private String generateToken(UserInfo user){
+    private String generateToken(User user){
         //生成jwt
-        Map<String, Object> claims = new HashMap<String, Object>();  // Claims包含您想要签署的任何信息
-        String iss = AESUtil.AESEncode(ResponseConstant.AES_SECRET,user.getId()+","+user.getUsername()+","+user.getPassword());
-        claims.put("iss",iss); //jwt的签发者 保存用户的帐号和密码以及id 使用AES对称加密
-        claims.put("sub",user.getUsername()); // JWT所面向的用户 用户的username
+        Map<String, Object> claims = new HashMap<>();  // Claims包含您想要签署的任何信息
+        String iss = AESUtil.AESEncode(ResponseConstant.AES_SECRET,
+                user.getId() + "," + user.getUsername() + "," + user.getPassword());
+        claims.put("iss", iss); //jwt的签发者 保存用户的帐号和密码以及id 使用AES对称加密
+        claims.put("sub", user.getUsername()); // JWT所面向的用户 用户的username
         claims.put("iat", new Date());
-        claims.put("jti",UUID.randomUUID()); //jwt的唯一身份表示
-        //获取token
-        String token = JwtTokenUtil.generateToken(claims, ResponseConstant.JWT_SECRET, ResponseConstant.JWT_EXPIRATION);
-        return  token;
+        claims.put("jti", UUID.randomUUID()); //jwt的唯一身份表示
+
+        return  JwtTokenUtil.generateToken(claims, ResponseConstant.JWT_SECRET, ResponseConstant.JWT_EXPIRATION);
     }
 
 
-    @Override
+    /*@Override
     public String refresh(String token) {
     *//*    String username = JwtTokenUtil.getUsernameFromToken(token);
         UserInfo info = userService.getUserByUsername(username);*//*
