@@ -1,11 +1,8 @@
-@import './variables.scss';
 @import './mixin.scss';
-@import './transition.scss';
+@import './btn.scss';
 @import './element-ui.scss';
 @import './sidebar.scss';
-
 body {
-  height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -17,12 +14,7 @@ label {
 }
 
 html {
-  height: 100%;
   box-sizing: border-box;
-}
-
-#app{
-  height: 100%;
 }
 
 *,
@@ -52,10 +44,6 @@ a:hover {
   text-decoration: none;
 }
 
-div:focus{
-  outline: none;
- }
-
 .fr {
   float: right;
 }
@@ -84,24 +72,12 @@ div:focus{
   display: block;
 }
 
-.clearfix {
-  &:after {
-    visibility: hidden;
-    display: block;
-    font-size: 0;
-    content: " ";
-    clear: both;
-    height: 0;
-  }
-}
-
 code {
   background: #eef1f6;
-  padding: 15px 16px;
+  padding: 15px 10px;
   margin-bottom: 20px;
   display: block;
   line-height: 36px;
-  font-size: 14px;
   a {
     color: #337ab7;
     cursor: pointer;
@@ -111,17 +87,14 @@ code {
   }
 }
 
-.warn-content{
-  background: rgba(66,185,131,.1);
-  border-radius: 2px;
-  padding: 16px;
-  padding: 1rem;
-  line-height: 1.6rem;
-  word-spacing: .05rem;
-  a{
-    color: #42b983;
-    font-weight: 600;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: all .2s ease
+}
+
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
 }
 
 //main-container全局样式
@@ -144,6 +117,14 @@ code {
 
 .text-center {
   text-align: center
+}
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
 }
 
 .sub-navbar {
@@ -176,6 +157,57 @@ code {
   }
 }
 
+.publishedTag,
+.draftTag,
+.deletedTag {
+  color: #fff;
+  background-color: $panGreen;
+  line-height: 1;
+  text-align: center;
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  position: absolute;
+  left: 20px;
+  top: 10px;
+}
+
+.draftTag {
+  background-color: $yellow;
+}
+
+.deletedTag {
+  background-color: $red;
+}
+
+.input-label {
+  font-size: 14px;
+  color: #48576a;
+  line-height: 1;
+  padding: 11px 5px 11px 0;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+.no-marginLeft {
+  .el-checkbox {
+    margin: 0 20px 15px 0;
+  }
+  .el-checkbox+.el-checkbox {
+    margin-left: 0px;
+  }
+}
+
 .filter-container {
   padding-bottom: 10px;
   .filter-item {
@@ -194,53 +226,47 @@ code {
   z-index: 1000 !important;
 }
 
-// 行高  billjiang 修改
-.el-table th,.el-table td {
-  padding:0px;
-  height:40px;
+//refine simplemde
+.simplemde-container {
+  .editor-toolbar.fullscreen,
+  .CodeMirror-fullscreen {
+    z-index: 1003;
+  }
 }
 
-
-.el-table .caret-wrapper {
-  margin-left:5px;
+//暂时性解决diolag 问题 https://github.com/ElemeFE/element/issues/2461
+.el-dialog {
+  transform: none;
+  left: 0;
+  position: relative;
+  margin: 0 auto;
 }
 
-.el-tree {
-  border: 1px solid #ebeef5;
-  background-color: #fff;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+//github-corner
+.github-corner:hover .octo-arm {
+  animation: octocat-wave 560ms ease-in-out
 }
 
-.el-tree-node__content {
-  line-height: 36px;
-  height:36px;
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0)
+  }
+  20%,
+  60% {
+    transform: rotate(-25deg)
+  }
+  40%,
+  80% {
+    transform: rotate(10deg)
+  }
 }
 
-.el-button{
-  padding:10px 15px;
-}
-
-.el-input__inner{
-  height:36px;
-  padding:3px 10px;
-}
-
-.el-table:not(.el-table--border){
-  border:1px solid #ebeef5;
-  border-bottom:none
-}
-
-.el-menu-item [class^="el-icon-"]{
-  font-size:14px;
-}
-.el-menu{
-  margin:0;
-  padding-left: 0;
-  background-color: #eef1f6;
-}
-
-
-.el-menu-item[class*="menuTitle"]{
-   line-height: 40px;
-   height:40px;
+@media (max-width:500px) {
+  .github-corner:hover .octo-arm {
+    animation: none
+  }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out
+  }
 }

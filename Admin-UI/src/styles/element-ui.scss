@@ -1,8 +1,22 @@
  //覆盖一些element-ui样式
+ .block-checkbox {
+   display: block;
+ }
 
- .el-breadcrumb__inner, .el-breadcrumb__inner a{
-  font-weight: 400!important;
-}
+ .operation-container {
+   .cell {
+     padding: 10px !important;
+   }
+   .el-button {
+     &:nth-child(3) {
+       margin-top: 10px;
+       margin-left: 0px;
+     }
+     &:nth-child(4) {
+       margin-top: 10px;
+     }
+   }
+ }
 
  .el-upload {
    input[type="file"] {
@@ -16,14 +30,14 @@
 
  .cell {
    .el-tag {
-     margin-right: 0px;
+     margin-right: 8px;
    }
  }
 
  .small-padding {
    .cell {
-     padding-left: 5px;
-     padding-right: 5px;
+     padding-left: 8px;
+     padding-right: 8px;
    }
  }
 

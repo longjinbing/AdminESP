@@ -1,0 +1,59 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          #uri: https://github.com/bill1012/spring-cloud-config.git
+          #uri: http://gitlab.bill.com/billjiang/spring-cloud-config.git
+          #search-paths: config
+          #username: bill1012
+          #username: billjiang
+          #password: '{cipher}e743a9e6c959a7c9be36929e19588706502d065305a2e92cb6230f6321b6bf29'
+          uri: http://localhost/billjiang/spring-cloud-config.git
+          search-paths: config
+          username: billjiang
+          password: '{cipher}18a53c2c7157f17aa3d5a72dc77b4c31a023570c61186605efa3928ea4b343fd'
+security:
+  basic:
+    enabled: true
+  user:
+    name: user
+    password: 123456
+endpoints:
+  bus:
+    enabled: true
+    sensitive: false
+
+
+
+server:
+  port: 8750
+
+eureka:
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
+
+
+---
+spring:
+  profiles: docker
+  cloud:
+    config:
+      server:
+        git:
+          uri: http://gitlab/billjiang/spring-cloud-config.git
+          search-paths: config
+          username: billjiang
+          password: '{cipher}62291385f3566570dccf406c193d71953774554798eee423736da83cef4023e3'
+server:
+  port: ${{SERVER_PORT}:8750}
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVER_LIST}
+
+
+

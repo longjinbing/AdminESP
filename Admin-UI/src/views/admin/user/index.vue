@@ -1,168 +1,437 @@
 <template>
-  <div class="app-container">
-
+  <div class="app-container calendar-list-container">
+    <!--查询条件-->
     <div class="filter-container">
-      <el-input placeholder="姓名/拼音/缩写/用户名" style="width: 200px;"/>
-
-      <el-button type="primary" icon="el-icon-search" :title="labels.search">{{labels.search}}</el-button>
-      <el-button type="primary" icon="el-icon-plus" :title="labels.add" @click="dialogVisible = true">{{labels.add}}</el-button>
+      <el-input @keyup.enter.native="handleFilter" style="width: 200px;" class="filter-item" placeholder="姓名或账户"
+                v-model="listQuery.name"></el-input>
+      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter" title="搜索">搜索</el-button>
+      <el-button class="filter-item" type="primary" icon="plus" v-if="userManager_btn_add" title="新增"
+                 style="margin-left:10px;" @click="handleCreate">新增</el-button>
     </div>
-
-    <el-table :data="list" :key="tableKey" border stripe fit highlight-current-row v-loading.body="listLoading"
-              max-height="650">
-      <el-table-column align="center" type="index" label="序号" fixed="left" width="65"/>
-      <el-table-column align="center" prop="name" label="姓名"/>
-      <el-table-column align="center" prop="username" label="账号"/>
-      <el-table-column align="center" prop="email" label="邮箱"/>
-      <el-table-column align="center" prop="mobile" label="手机"/>
-      <el-table-column align="center" label="状态" width="80">
-        <template slot-scope="scope">
-          <el-switch
-            v-model="scope.row.enabled"
-            :active-value="elSwitch.enable"
-            :inactive-value="elSwitch.disable"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            @change="switchState($event, scope.row.id)"/>
+    <!--列表-->
+    <el-table :key="tableKey" :data="list" stripe v-loading.body="listLoading" fit highlight-current-row
+              style="width: 100%">
+      <el-table-column align="center" label="序号" type="index" width="65">
+     <!--   <template scope="scope">
+          <span>{{scope}}</span>
+        </template>-->
+      </el-table-column>
+      <el-table-column align="center" label="姓名" sortable prop="name" width="140">
+        <template scope="scope">
+          <span>{{scope.row.name}}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" fixed="right" label="操作" width="120">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" icon="el-icon-edit" circle @click="handleEdit(scope.row)"/>
-          <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="handleDelete(scope.row)"/>
+      <el-table-column align="center" label="账户" width="110">
+        <template scope="scope">
+          <span>{{scope.row.username}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="性别" width="80">
+        <template scope="scope">
+          <span>{{scope.row.sex}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="生日" width="140" prop="birthday">
+        <template scope="scope">
+          <span>{{scope.row.birthday | formatDate('yyyy-MM-dd')}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="邮箱" width="180">
+        <template scope="scope">
+          <span>{{scope.row.email}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="手机" width="180">
+        <template scope="scope">
+          <span>{{scope.row.mobilePhone}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="最近更新时间" width="180">
+        <template scope="scope">
+          <span>{{scope.row.updateTime}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="最后更新人" width="110">
+        <template scope="scope">
+          <span>{{scope.row.updateName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="联系地址">
+        <template scope="scope">
+          <span>{{scope.row.address}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="left" label="备注">
+        <template scope="scope">
+          <span>{{scope.row.description}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column fixed="right" align="center" label="操作" width="150">
+        <template scope="scope">
+          <el-button v-if="userManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          </el-button>
+          <el-button v-if="userManager_btn_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-
-    <div class="pagination-container">
-      <el-pagination
-        background
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page.sync="listQuery.page"
-        :page-sizes="[10, 20, 30, 50]"
-        :page-size="listQuery.limit"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
+    <!--分页-->
+    <div v-show="!listLoading" class="pagination-container">
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                     :current-page.sync="listQuery.page"
+                     :page-sizes="[10.,20,30,50]" :page-size="listQuery.limit"
+                     layout="total,sizes,prev,pager,next,jumper" :total="total">
       </el-pagination>
     </div>
-
-    <el-dialog title="人员信息" :visible.sync="dialogVisible" width="23%" @close="closeDialog">
-      <el-form label-width="80px" :model="form" ref="form" :rules="rules">
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="账号" prop="username">
-          <el-input v-model="form.username"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form.email"></el-input>
-        </el-form-item>
-        <el-form-item label="手机" prop="mobile">
-          <el-input v-model="form.mobile"></el-input>
-        </el-form-item>
+    <!--编辑框-->
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :before-close="handleClose">
+      <el-form :model="form" :inline="true" :rules="rules" ref="form" label-width="90px">
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="姓名" prop="name">
+              <el-input v-model="form.name" placeholder="请输入姓名" class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="账户" prop="username">
+              <el-input v-if="dialogStatus=='create'" v-model="form.username" placeholder="请输入账户" class="input-selects-width"></el-input>
+              <el-input v-else v-model="form.username" placeholder="请输入账户" readonly class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item v-if="dialogStatus=='create'" label="密码" placeholder="请输入密码" prop="password">
+              <el-input type="password" v-model="form.password" class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="dialogStatus=='create'" label="确认密码" placeholder="请输入密码" prop="password">
+              <el-input type="password" v-model="form.password" class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="性别">
+              <el-select class="filter-item input-selects-width" v-model="form.sex"  placeholder="请选择">
+                <el-option v-for="item in  sexOptions" :key="item" :label="item" :value="item"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="生日" aria-placeholder="请输入生日" prop="birthday">
+              <el-date-picker v-model="form.birthday" type="date" placeholder="请选择日期" class="input-selects-width"
+                              :picker-options="birthdayOptions" style="width: 340px"></el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="form.email" placeholder="请输入邮箱" class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="手机号码" prop="mobilePhone">
+              <el-input v-model="form.mobilePhone" placeholder="请输入手机号码" class="input-selects-width"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="组织机构" prop="corg">
+              <el-input v-model="form.corg" placeholder="请选择组织机构" :readonly="true" style="width:270px;"></el-input>
+              <el-button type="primary" @click="checkOrg()" >选 择</el-button>
+            </el-form-item>   
+          </el-col>
+          <el-col :span="12">
+          </el-col>
+        </el-row>.
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="联系地址">
+              <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" class="input-selects-width" placeholder="请输入联系地址"
+                        v-model="form.address"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="备注">
+              <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" class="input-selects-width" placeholder="请输入备注"
+                        v-model="form.description"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
-      <span slot="footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="saveUser">保 存</el-button>
-      </span>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel('form')">取 消</el-button>
+        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
+        <el-button v-else type="primary" @click="update('form')">确 定</el-button>
+      </div>
     </el-dialog>
-
+        <!-- 组织机构管理选择树 -->
+    <el-dialog :visible.sync="dialogOrgTreeVisible" ref="diaog_tree" size="tiny">
+      <org-tree @org_tree="getTreeNodes" @org_tree_cancel="orgCancelTree"></org-tree>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import { page, addObj, putObj, delObj } from 'api/admin/user/index';
-
+  import {
+    page, addObj, getObj, delObj, putObj} from 'api/admin/user/index'
+  import {mapGetters} from 'vuex'
+  import {isvalidDate} from '@/utils/validate'
+  import OrgTree from '@/views/admin/org/checkOrg'
   export default {
+    name: 'user',
+    components: {
+      OrgTree
+    },
     data() {
+      const validateBirthday = (rule, value, callback) => {
+        if (!isvalidDate(value)) {
+          callback(new Error('请输入正确的日期格式'))
+        } else {
+          callback()
+        }
+      };
       return {
-        labels: { search: '搜索', add: '新增' },
-        list: [],
-        total: 0,
-        tableKey: 0,
+        form: this.initObj(),
+        birthdayOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now() - 8.64e7;
+          }
+        },
+        rules: {
+          name: [
+            {
+              required: true,
+              message: '请输入用户名',
+              trigger: 'blur'
+            }
+          ],
+          username: [
+            {
+              required: true,
+              message: '请输入账户名',
+              trigger: 'blur'
+            },
+            {
+              min: 3,
+              max: 20,
+              message: '长度在3到20个字符',
+              trigger: 'blur'
+            }],
+          password: [
+            {
+              required: true,
+              message: '请输入密码',
+              trigger: 'blur'
+            },
+            {
+              min: 5,
+              max: 20,
+              message: '长度在 5 到 20 个字符',
+              trigger: 'blur'
+            }
+          ],
+          email: [{
+            type: 'email',
+            message: '请输入有效的邮箱格式',
+            trigger: 'blur'
+          }],
+          birthday: [{
+            // required: true,
+            // message: '请输入有效日期格式',
+            trigger: 'blur',
+            validator: validateBirthday
+          }],
+          mobilePhone: [{
+            pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的手机号码', trigger: 'blur'
+          }]
+        },
+        list: null,
+        total: null,
         listLoading: true,
+        dialogOrgTreeVisible: false,
         listQuery: {
           page: 1,
           limit: 20,
           name: undefined
         },
-        dialogVisible: false,
-        form: { id: null, name: null, username: null, email: null, mobile: null },
-        rules: {
-          name: [
-            { required: true, message: '请输入姓名', trigger: 'blur' }
-          ],
-          username: [
-            { required: true, message: '请输入账号', trigger: 'blur' }
-          ],
-          email: [
-            { required: true, message: '请输入邮箱', trigger: 'blur' }
-          ],
-          mobile: [
-            { required: true, message: '请输入手机号', trigger: 'blur' }
-          ]
+        sexOptions: ['男', '女'],
+        dialogFormVisible: false,
+        dialogStatus: '',
+        userManager_btn_edit: false,
+        userManager_btn_add: false,
+        userManager_btn_del: false,
+        textMap: {
+          update: '更新',
+          create: '创建'
         },
-        elSwitch: { enable: 1, disable: 0 }
-      };
+        tableKey: 0,
+        treeNodes: ''
+      }
     },
     created() {
-      this.getList();
+      this.getList()
+      /* this.userManager_btn_edit = this.elements['userManager:btn_edit']
+       this.userManager_btn_add = this.elements['userManager:btn_add']
+       this.userManager_btn_del = this.elements['userManager:btn_del']*/
+      this.userManager_btn_edit = true;
+      this.userManager_btn_add = true
+      this.userManager_btn_del = true
+    },
+    computed: {
+      ...mapGetters([
+        'elements'
+      ])
     },
     methods: {
+      initObj() {
+        return {
+          username: undefined,
+          name: undefined,
+          sex: '男',
+          password: undefined,
+          email: undefined,
+          birthday: '',
+          address: '',
+          mobilePhone: undefined,
+          description: undefined,
+          corg: '',
+          corgId: ''
+        }
+      },
+      handleClose(done) {
+        this.cancel('form');
+        done();
+      },
       getList() {
-        this.listLoading = true;
-        page(this.listQuery).then(res => {
-          this.list = res.data.data.rows;
-          this.total = res.data.data.total;
-          this.listLoading = false;
-        });
+        this.listLoading = true
+        page(this.listQuery).then(response => {
+          this.list = response.data.rows
+          this.total = response.data.total
+          this.listLoading = false
+        })
+      },
+      /* birthdayFormat(row, column) {
+        var date = row[column.property];
+        if (date === undefined || date === '') {
+          return '';
+        } else {
+          return formatDate(date, 'yyyy-MM-dd');
+        }
+      }, */
+      handleFilter() {
+        this.getList()
       },
       handleSizeChange(val) {
-        this.listQuery.limit = val;
-        this.getList();
+        this.listQuery.limit = val
+        this.getList()
       },
       handleCurrentChange(val) {
-        this.listQuery.page = val;
-        this.getList();
+        this.listQuery.page = val
+        this.getList()
       },
-      handleEdit(row) {
-        const { id, name, username, email, mobile } = row;
-        this.form = { id, name, username, email, mobile };
-        this.dialogVisible = true;
+      handleCreate() {
+        this.resetTemp()
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      },
+      handleUpdate(row) {
+        getObj(row.id).then(response => {
+          this.form = response.data
+          this.dialogFormVisible = true
+          this.dialogStatus = 'update'
+        })
       },
       handleDelete(row) {
-        this.$confirm('此操作将彻底删除用户信息, 是否继续?', '提示', {
+        this.$confirm('是否刪除该记录？', '记录', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           delObj(row.id).then(() => {
-            this.getList();
-            this.$message({ type: 'success', message: '删除成功!' });
-          });
-        }).catch(() => {});
+            this.$notify({
+              title: '成功',
+              message: '删除成功',
+              type: 'success',
+              duration: 2000
+            })
+            const index = this.list.indexOf(row)
+            this.list.splice(index, 1)
+          })
+        })
       },
-      saveUser() {
-        this.$refs['form'].validate(valid => {
+      create(formName) {
+        const set = this.$refs
+        set[formName].validate(valid => {
           if (valid) {
-            (this.form.id ? putObj : addObj)(this.form).then(() => {
-              this.$message({ type: 'success', message: '保存成功!' });
-              this.dialogVisible = false;
-              this.getList();
-            });
+            addObj(this.form).then(() => {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          } else {
+            return false
           }
-        });
+        })
       },
-      closeDialog() {
-        this.form = { id: null, name: null, username: null, email: null, mobile: null };
-        this.$refs.form.clearValidate();
+      cancel(formName) {
+        this.dialogFormVisible = false
+        this.$refs[formName].resetFields()
       },
-      switchState(val, id) {
-        console.info(val)
-        console.info(id)
-        putObj({ id, enabled: val }).then();
+      update(formName) {
+        const set = this.$refs
+        set[formName].validate(valid => {
+          if (valid) {
+            this.dialogFormVisible = false
+            this.form.password = undefined
+            putObj(this.form.id, this.form).then(() => {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          } else {
+            return false
+          }
+        })
+      },
+      resetTemp() {
+        this.form = this.initObj();
+      },
+      checkOrg() {
+        this.dialogOrgTreeVisible = true
+      },
+      getTreeNodes(msg) {
+        var cid = '';
+        var corg = '';
+        cid = msg.map(item => item.id).join();
+        corg = msg.map(item => item.label).join();
+        this.treeNodes = msg
+        this.form.corg = corg
+        this.form.corgId = cid
+        this.dialogOrgTreeVisible = false
+      },
+      orgCancelTree() {
+        this.dialogOrgTreeVisible = false
       }
     }
   }
 </script>
+<style>
+.input-selects-width{
+  width: 340px;
+}
+</style>

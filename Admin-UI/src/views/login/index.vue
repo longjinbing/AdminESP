@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form class="card-box login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-      <h3 class="title">登 录</h3>
+      <h3 class="title">系统登录</h3>
 
       <el-form-item prop="username">
         <span class="svg-container svg-container_login">
@@ -21,10 +21,10 @@
 
       <el-button type="primary" style="width:100%;margin-bottom:30px;" :loading="loading" @click.native.prevent="handleLogin">登录</el-button>
 
-      <!--<div class='tips'>账号:admin 密码:admin</div>-->
-      <!--<div class='tips'>账号:test  密码:test</div>-->
+      <div class='tips'>账号:admin 密码:admin</div>
+      <div class='tips'>账号:test  密码:test</div>
 
-      <!--<el-button class='thirdparty-button' type="primary" @click='showDialog=true'>打开第三方登录</el-button>-->
+      <el-button class='thirdparty-button' type="primary" @click='showDialog=true'>打开第三方登录</el-button>
     </el-form>
 
     <el-dialog title="第三方验证" :visible.sync="showDialog">
@@ -39,6 +39,7 @@
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import socialSign from './socialsignin'
+import { Message } from 'element-ui'
 
 export default {
   components: { socialSign },
@@ -50,15 +51,22 @@ export default {
       } else {
         callback()
       }
-    };
+    }
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 4) {
+        callback(new Error('密码不能小于4位'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: 'test',
+        password: 'test'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空'}]// validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       pwdType: 'password',
       loading: false,
@@ -67,19 +75,35 @@ export default {
   },
   methods: {
     showPwd() {
-      this.pwdType = this.pwdType === 'password' ? '' : 'password';
+      if (this.pwdType === 'password') {
+        this.pwdType = ''
+      } else {
+        this.pwdType = 'password'
+      }
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true;
-          this.$store.dispatch('LoginByUsername', this.loginForm).then(() => {
-            this.loading = false;
-            this.$router.push({ path: '/' });
-          }).catch(() => { this.loading = false; });
+          this.loading = true
+          this.$store.dispatch('LoginByUsername', this.loginForm).then(res => {
+            if (res.result) {
+              this.loading = false
+              this.$router.push({ path: '/' })
+            } else {
+              this.loading = false
+              Message({
+                message: res.message,
+                type: 'error',
+                duration: 5 * 1000
+              })
+            }
+                // this.showDialog = true
+          }).catch(() => {
+            this.loading = false
+          })
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
       })
     },
@@ -112,7 +136,7 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss">
-  @import 'src/styles/mixin.scss';
+  @import "src/styles/mixin.scss";
   $bg:#2d3a4b;
   $dark_gray:#889aa4;
   $light_gray:#eee;

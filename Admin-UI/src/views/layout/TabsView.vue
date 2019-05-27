@@ -1,6 +1,6 @@
 <template>
   <div class='tabs-view-container'>
-     <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path" v-if="tag.path != '/admin/uLayout'">
+    <router-link class="tabs-view" v-for="tag in Array.from(visitedViews)" :to="tag.path" :key="tag.path">
       <el-tag :closable="true" :type="isActive(tag.path)?'primary':''" @close='closeViewTabs(tag,$event)'>
         {{tag.name}}
       </el-tag>
@@ -51,63 +51,13 @@ export default {
 }
 </script>
 
-<style rel="stylesheet/scss" lang="scss">
+<style rel="stylesheet/scss" lang="scss" scoped>
   .tabs-view-container {
     display: inline-block;
     vertical-align: top;
     margin-left: 10px;
     .tabs-view {
       margin-left: 10px;
-      .el-tag {
-        /*  background-color: rgba(182, 205, 228, 0.1);
-          padding: 0 10px;
-          height: 32px;
-          line-height: 30px;
-          font-size: 12px;
-          color: #409EFF;
-          border-radius: 4px;
-          box-sizing: border-box;
-          border: 1px solid rgba(64, 158, 255, .2);*/
-        background-color: #8391a5;
-        padding: 0 5px;
-        height: 32px;
-        line-height: 30px;
-        font-size: 12px;
-        color: #fff;
-        border-radius: 4px;
-        box-sizing: border-box;
-        border: 1px solid transparent;
-      }
-
-      .el-tag .el-icon-close {
-        color:#fff;
-      }
-
-      .el-tag .el-icon-close:hover{
-        background-color: #fff;
-        color: #8391a5;
-      }
-
-      .el-tag--primary{
-        background-color:rgba(182, 205, 228, 0.1);
-        border:  1px solid rgba(64, 158, 255, .2);
-        color: #20a0ff;
-      }
-
-      .el-tag--primary .el-icon-close{
-        color: #20a0ff;
-      }
-
-      .el-tag--primary .el-icon-close:hover{
-        background-color: #20a0ff;
-        color: #fff;
-      }
     }
   }
-
-
-
-
-
 </style>
-

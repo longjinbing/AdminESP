@@ -3,7 +3,9 @@ import loginAPI from './login'
 import articleAPI from './article'
 import remoteSearchAPI from './remoteSearch'
 
-Mock.setup({ timeout: '350-600' });
+Mock.setup({
+  timeout: '350-600'
+})
 
 // 登录相关
 Mock.mock(/\/login\/login/, 'post', loginAPI.loginByUsername)
@@ -17,7 +19,5 @@ Mock.mock(/\/article\/pv/, 'get', articleAPI.getPv)
 
 // 搜索相关
 Mock.mock(/\/search\/user/, 'get', remoteSearchAPI.searchUser)
-
-// Mock.mock(/\/api\/admin\/user\/list/, 'get', remoteSearchAPI.userList)
 
 export default Mock

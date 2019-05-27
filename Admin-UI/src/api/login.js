@@ -1,31 +1,32 @@
-import fetch from '@/utils/fetch';
+import fetch from '@/utils/fetch'
 
-function loginByUsername(username, password) {
-  const data = { username, password };
+export function loginByUsername(username, password) {
+  const data = {
+    username,
+    password
+  }
   return fetch({
     // url: '/login/login',
     url: '/jwt/token',
-    method: 'POST',
+    method: 'post',
     data
   })
 }
 
-function logout() {
+export function logout() {
   return fetch({
     // url: '/login/logout',
     url: '/jwt/invalid',
-    method: 'POST'
+    method: 'post'
   })
 }
 
-function getUserInfo(token) {
+export function getUserInfo(token) {
   return fetch({
     // url: '/user/info',
     url: '/jwt/user',
-    method: 'GET',
+    method: 'get',
     params: { token }
   })
 }
-
-export { loginByUsername, logout, getUserInfo };
 

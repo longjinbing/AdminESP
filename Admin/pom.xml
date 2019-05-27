@@ -1,178 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.amani.eap</groupId>
-    <artifactId>eap-admin</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
 
-    <name>eap-admin</name>
-    <description>An Enterprise Application Development Platform.</description>
+    <groupId>com.cnpc</groupId>
+    <artifactId>admin</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
     <developers>
         <developer>
             <name>billjiang</name>
             <email>475572229@qq.com</email>
         </developer>
-        <developer>
-            <name>鬼王</name>
-            <email>guixiong97@sina.cn</email>
-        </developer>
     </developers>
+
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <description>Enterprise Service Platform</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.1.RELEASE</version>
+        <version>1.5.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <!--<mysql.connector.version>5.1.46</mysql.connector.version>-->
-        <!--<mapper.version>3.4.0</mapper.version>-->
-        <!--<mybatis.version>3.4.6</mybatis.version>-->
-        <!--<mybatis.spring.version>1.3.2</mybatis.spring.version>-->
-        <!--<pagehelper.version>4.1.1</pagehelper.version>-->
-
-        <!--mybatis generator 反向工程参数-->
-        <!--<targetJavaProject>${basedir}/src/main/java</targetJavaProject>-->
-        <!--<targetMapperPackage>${project.groupId}.admin.mapper</targetMapperPackage>-->
-        <!--<targetModelPackage>${project.groupId}.admin.entity</targetModelPackage>-->
-        <!--mybatis xml生成路径-->
-        <!--<targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>-->
-        <!--<targetXMLPackage>mapper</targetXMLPackage>-->
+        <!-- 10.27.213.66-->
+        <docker.image.prefix>127.0.0.1:5000/adminesp</docker.image.prefix>
+        <docker.plugin.version>1.0.0</docker.plugin.version>
     </properties>
+
+    <modules>
+        <!--基于Eureka的服务注册中心-->
+        <module>esp-registry</module>
+        <!--基于spring cloud config的服务配置中心-->
+        <module>esp-config</module>
+        <!--用户中心+权限管理中心-->
+        <module>esp-admin</module>
+        <!--通用Bean-->
+        <module>esp-common</module>
+        <!--基于sleuth+zipkin的服务调用追踪-->
+        <module>esp-track</module>
+        <!--基于zuul的API网关-->
+        <module>esp-gateway</module>
+        <!--基于spring boot admin 的监控-->
+        <module>esp-monitor</module>
+    </modules>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <!--
-        Starter for using Undertow as the embedded servlet container.
-        An alternative to spring-boot-starter-tomcat
-        -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-undertow</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>5.0.5.RELEASE</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>2.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>2.6.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>1.1.9</version>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.46</version>
-        </dependency>
-
-        <!-- MyBatis Begin -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mybatis.generator</groupId>
-            <artifactId>mybatis-generator-core</artifactId>
-            <version>1.3.6</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>tk.mybatis</groupId>
-            <artifactId>mapper</artifactId>
-            <version>4.0.2</version>
-        </dependency>
-        <!-- MyBatis End -->
-
-        <dependency>
-            <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-            <version>5.1.4</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.14</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!--<plugin>-->
-                <!--<groupId>org.mybatis.generator</groupId>-->
-                <!--<artifactId>mybatis-generator-maven-plugin</artifactId>-->
-                <!--<version>1.3.6</version>-->
-                <!--<configuration>-->
-                    <!--<configurationFile>${basedir}/src/main/resources/builder/generatorConfig.xml</configurationFile>-->
-                    <!--<overwrite>true</overwrite>-->
-                    <!--<verbose>true</verbose>-->
-                    <!--<includeCompileDependencies>true</includeCompileDependencies>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        </plugins>
-    </build>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Dalston.SR2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
